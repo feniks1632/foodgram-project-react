@@ -64,7 +64,7 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'amount'
-          )
+        )
 
 
 class IngredientFullSerializer(serializers.ModelSerializer):

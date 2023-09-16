@@ -12,7 +12,7 @@ class UsersAdmin(UserAdmin):
         'first_name',
         'last_name',
         'role'
-        )
+    )
     fieldsets = (
         (
             "User",
