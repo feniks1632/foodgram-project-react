@@ -2,22 +2,32 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from foodgram.settings import CSV_FILES_DIR
-from recipes.models import Ingredient
+from recipes.models import Ingredient, Tag
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **kwargs):
-        with open(
-            f'{CSV_FILES_DIR}/ingredients.csv', encoding='utf-8'
-        ) as file:
-            reader = csv.reader(file)
-            next(reader)
-            ingredients = [
-                Ingredient(
-                    name=row[0],
-                    measurement_unit=row[1],
-                )
-                for row in reader
-            ]
-            Ingredient.objects.bulk_create(ingredients)
+    def handle(self, *args, **options):
+        self.stdout.write(self.style.WARNING('Загружаются тэги'))
+        Tag.objects.get_or_create(
+            name='Завтрак',
+            slug='breakfast',
+            color='#FFFC66'
+        )
+        Tag.objects.get_or_create(
+            name='Обед',
+            slug='lunch',
+            color='#54E709'
+        )
+        Tag.objects.get_or_create(
+            name='Ужин',
+            slug='dinner',
+            color='#E4007C'
+        )
+        self.stdout.write(self.style.WARNING('Загружаются ингредиенты'))
+        with open('data/ingredients.csv',
+                  encoding='utf-8') as fixture:
+            reader = csv.reader(fixture)
+            for row in reader:
+                name, unit = row
+                Ingredient.objects.get_or_create(name=name,
+                                                 measurement_unit=unit)
