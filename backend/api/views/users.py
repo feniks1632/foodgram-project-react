@@ -34,17 +34,12 @@ class CustomUserViewSet(UserViewSet):
             serializer.is_valid(raise_exception=True)
             Subscribe.objects.create(
                 follow=follow,
-<<<<<<< HEAD
-                author=author)
-=======
                 author=author
             )
->>>>>>> f1216fdd9c80231e354b6edece93c4941016ef0a
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
-
         elif request.method == 'DELETE':
             Subscribe.objects.filter(
                 follow=follow,
@@ -58,6 +53,7 @@ class CustomUserViewSet(UserViewSet):
         result_pages = self.paginate_queryset(authors)
         serializer = SubscribeSerializer(
             result_pages,
-            many=True, context={'request': request}
+            many=True,
+            context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
