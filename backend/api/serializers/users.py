@@ -1,4 +1,7 @@
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserSerializer as DjoserUserSerializer
+from djoser.serializers import (
+    UserCreateSerializer as DjoserUserCreateSerializer
+)
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -6,7 +9,7 @@ from recipes.models import Recipe
 from users.models import Subscribe, User
 
 
-class CustomUserSerializer(UserSerializer):
+class UserSerializer(DjoserUserSerializer):
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -28,7 +31,7 @@ class CustomUserSerializer(UserSerializer):
             author=object).exists()
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class UserCreateSerializer(DjoserUserCreateSerializer):
     class Meta:
         model = User
         fields = (
@@ -54,7 +57,7 @@ class RecipeShortSerializer(serializers.ModelSerializer):
         )
 
 
-class SubscribeSerializer(CustomUserSerializer):
+class SubscribeSerializer(UserSerializer):
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 

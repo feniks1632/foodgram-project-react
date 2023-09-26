@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'default_key')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,7 +59,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
-
 
 DATABASES = {
     'default': {
@@ -127,9 +126,9 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
     'SERIALIZERS': {
-        'user_create': 'api.serializers.users.CustomUserCreateSerializer',
-        'user': 'api.serializers.users.CustomUserSerializer',
-        'current_user': 'api.serializers.users.CustomUserSerializer',
+        'user_create': 'api.serializers.users.UserCreateSerializer',
+        'user': 'api.serializers.users.UserSerializer',
+        'current_user': 'api.serializers.users.UserSerializer',
     },
     'PERMISSIONS': {
         'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],

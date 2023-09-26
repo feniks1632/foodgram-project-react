@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from ..serializers.users import (
-    CustomUserSerializer,
+    UserSerializer,
     SubscribeSerializer
 )
 from users.models import (
@@ -16,7 +16,7 @@ from users.models import (
 
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     @action(detail=True, methods=['post', 'delete'],
@@ -32,7 +32,9 @@ class CustomUserViewSet(UserViewSet):
                 context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
-            Subscribe.objects.create(follow=follow, author=author)
+            Subscribe.objects.create(
+                follow=follow,
+                author=author)
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
