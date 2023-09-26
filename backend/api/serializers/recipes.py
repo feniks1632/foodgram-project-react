@@ -156,7 +156,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 class RecipeGETSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     ingredients = IngredientAmountSerializer(
-        many=True, source='IngredientAmount'
+        many=True,
+        source='IngredientAmount'
     )
     tags = TagSerializer(
         many=True,
