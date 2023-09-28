@@ -10,6 +10,7 @@ from .models import (
 )
 
 
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'name',
@@ -24,6 +25,7 @@ class IngredientAmountAdmin(admin.TabularInline):
     fk_name = 'recipe'
 
 
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'author',
@@ -47,8 +49,6 @@ class RecipeAdmin(admin.ModelAdmin):
     favorited.short_description = 'В избранном'
 
 
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag)
 admin.site.register(Favorite)
 admin.site.register(ShoppingCart)

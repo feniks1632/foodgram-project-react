@@ -19,33 +19,36 @@ class CustomUserViewSet(UserViewSet):
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    @action(detail=True, methods=['post', 'delete'],
+    @action(detail=True, methods=['post'],
             permission_classes=(permissions.IsAuthenticated,))
     def subscribe(self, request, id):
         author = get_object_or_404(User, id=id)
         follow = request.user
 
-        if request.method == 'POST':
-            serializer = SubscribeSerializer(
-                author,
-                data=request.data,
-                context={'request': request}
-            )
-            serializer.is_valid(raise_exception=True)
-            Subscribe.objects.create(
-                follow=follow,
-                author=author
-            )
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
+        serializer = SubscribeSerializer(
+            author,
+            data=request.data,
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        Subscribe.objects.create(
+            follow=follow,
+            author=author
+        )
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED
+        )
 
-        elif request.method == 'DELETE':
-            Subscribe.objects.filter(
-                follow=follow,
-                author=author).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+    @subscribe.mapping.delete
+    def delete_subscribe(self, request, id):
+        author = get_object_or_404(User, id=id)
+        follow = request.user
+        Subscribe.objects.filter(
+            follow=follow,
+            author=author
+        ).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
             permission_classes=(permissions.IsAuthenticated,))

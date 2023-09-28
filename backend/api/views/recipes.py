@@ -1,8 +1,7 @@
 from django.db import models
-from django.db.models import Sum, OuterRef, Exists
+from django.db.models import OuterRef, Exists
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -11,7 +10,6 @@ from ..filters import RecipeFilter, IngredientFilter
 from recipes.models import (
     Favorite,
     Ingredient,
-    IngredientAmount,
     Recipe,
     ShoppingCart,
     Tag
@@ -44,31 +42,37 @@ class IngredientsModelViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RecipeModelViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.select_related(
-        'author').prefetch_related('ingredients')
+    queryset = (
+        Recipe
+        .objects
+        .select_related('author')
+        .prefetch_related('ingredients')
+    )
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     filterset_class = RecipeFilter
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        favorited_subquery = Favorite.objects.filter(
-            user=self.request.user,
-            recipe=OuterRef('pk')
-        )
-        shopping_cart_subquery = ShoppingCart.objects.filter(
-            user=self.request.user,
-            recipe=OuterRef('pk')
-        )
-        queryset = queryset.annotate(
-            is_favorited=Exists(
-                favorited_subquery,
-                output_field=models.BooleanField()
-            ),
-            is_in_shopping_cart=Exists(
-                shopping_cart_subquery,
-                output_field=models.BooleanField()
+        if self.request.user.is_authenticated:
+            favorited_subquery = Favorite.objects.filter(
+                user=self.request.user,
+                recipe=OuterRef('pk')
             )
-        )
+            shopping_cart_subquery = ShoppingCart.objects.filter(
+                user=self.request.user,
+                recipe=OuterRef('pk')
+            )
+            queryset = queryset.annotate(
+                is_favorited=Exists(
+                    favorited_subquery,
+                    output_field=models.BooleanField()
+                ),
+                is_in_shopping_cart=Exists(
+                    shopping_cart_subquery,
+                    output_field=models.BooleanField()
+                )
+            )
+            return queryset
         return queryset
 
     def get_serializer_class(self):
@@ -144,15 +148,10 @@ class RecipeModelViewSet(viewsets.ModelViewSet):
         permission_classes=(permissions.IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
-        user = request.user
-        ingredients = IngredientAmount.objects.filter(
-            recipe__shopping_cart__user=user
-        ).order_by('ingredient__name').values(
-            'ingredient__name',
-            'ingredient__measurement_unit'
-        ).annotate(amount=Sum('amount'))
-        file = f'{user.username}_shopping_list'
-        response = get_shopping_list(ingredients)
+        if not request.user.shopping_cart.exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        file = f'{request.user.username}_shopping_list'
+        response = get_shopping_list(request)
         response = HttpResponse(response, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename="{file}.txt"'
         return response

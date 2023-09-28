@@ -1,8 +1,8 @@
 from django.contrib import admin
-
 from .models import User, Subscribe
 
 
+@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'id',
@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin):
         'first_name',
         'last_name'
     )
-    list_display_links = ('id', )
+    list_display_links = ('id',)
     search_fields = (
         'email',
         'username'
@@ -21,5 +21,4 @@ class UserAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(User, UserAdmin)
 admin.site.register(Subscribe)

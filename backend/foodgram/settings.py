@@ -8,7 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', 'default_key')
 
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = True
+print(DEBUG)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='').split()
 
@@ -19,14 +20,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
+    'debug_toolbar',
+
     'api.apps.ApiConfig',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
-    'debug_toolbar',
+
 ]
 
 MIDDLEWARE = [
