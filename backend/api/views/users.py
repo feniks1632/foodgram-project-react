@@ -57,6 +57,7 @@ class CustomUserViewSet(UserViewSet):
         result_pages = self.paginate_queryset(authors)
         serializer = SubscribeSerializer(
             result_pages,
-            many=True, context={'request': request}
+            many=True,
+            context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
