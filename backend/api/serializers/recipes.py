@@ -1,6 +1,5 @@
 from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
-
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -141,7 +140,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 recipe
             )
         if tags:
-            recipe.tags.clear()
             recipe.tags.set(tags)
         return recipe
 
