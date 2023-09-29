@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import OuterRef, Exists
-from django.http import HttpResponse
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
@@ -42,16 +42,16 @@ class IngredientsModelViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RecipeModelViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Recipe
-        .objects
-        .select_related('author')
-        .prefetch_related('ingredients')
-    )
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     filterset_class = RecipeFilter
 
     def get_queryset(self):
+        queryset = (
+            Recipe
+            .objects
+            .select_related('author')
+            .prefetch_related('ingredients')
+        )
         queryset = super().get_queryset()
         if self.request.user.is_authenticated:
             favorited_subquery = Favorite.objects.filter(
@@ -152,6 +152,6 @@ class RecipeModelViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         file = f'{request.user.username}_shopping_list'
         response = get_shopping_list(request)
-        response = HttpResponse(response, content_type='text/plain')
+        response = FileResponse(response, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename="{file}.txt"'
         return response
