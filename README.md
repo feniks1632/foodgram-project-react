@@ -139,7 +139,7 @@ python manage.py createsuperuser
 scp docker-compose.yml <username>@<host>:/home/<username>/
 scp nginx.conf <username>@<host>:/home/<username>/
 ```
-Либо создать docker-compose.yml и nginx.conf ручками(в корне)
+Либо создать docker-compose.yml и nginx.conf ручками и заполнить данными из оригинальных файлов(в корне)
 ```bash
 touch docker-compose.yml
 touch nginx.conf
