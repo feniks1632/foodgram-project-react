@@ -52,7 +52,6 @@ class RecipeModelViewSet(viewsets.ModelViewSet):
             .select_related('author')
             .prefetch_related('ingredients')
         )
-        queryset = super().get_queryset()
         if self.request.user.is_authenticated:
             favorited_subquery = Favorite.objects.filter(
                 user=self.request.user,
