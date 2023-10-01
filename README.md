@@ -44,4 +44,179 @@
 - Nginx
 - GitHub Actions
 
-- 
+  ### Для локального запуска проекта вам понадобится:
+  - Склонировать репозиторий:
+
+```bash
+   git clone <название репозитория>
+```
+
+```bash
+   cd <название репозитория> 
+```
+
+Cоздать и активировать виртуальное окружение:
+
+Команда для установки виртуального окружения:
+
+```bash
+   python3 -m venv env
+   source env/bin/activate
+```
+
+Команда для Windows:
+
+```bash
+   python -m venv venv
+   source venv/Scripts/activate
+```
+
+- Перейти в директорию infra:
+
+```bash
+   cd infra
+```
+
+- Создать файл .env по образцу(находится в папке infra env.example):
+
+- Документацию можно посмотреть после выполнения команды:
+  (Документация находится по адресу http://localhost/api/docs/) 
+
+```bash
+   docker-compose up 
+```
+
+Установить зависимости из файла requirements.txt:
+
+```bash
+   cd ..
+   cd backend
+   pip install -r requirements.txt
+```
+
+```bash
+   python manage.py migrate
+```
+
+Заполнить базу тестовыми данными об ингредиентах:
+
+```bash
+   python manage.py load_ingredients
+```
+
+Создать суперпользователя, (если необходимо):
+
+```bash
+python manage.py createsuperuser
+```
+
+- Запустить локальный сервер:
+
+```bash
+   python manage.py runserver
+```
+
+### Установка на удалённом сервере
+
+- Выполнить вход на удаленный сервер
+- Установить Docker и docker-compose:
+- Установка Docker
+```bash
+   sudo apt install docker.io
+   ```
+
+- Установка docker-compose:
+
+``` bash
+    sudo apt install docker-compose     
+```
+
+или воспользоваться официальной [инструкцией](https://docs.docker.com/compose/install/)
+
+- Находясь локально в директории infra/, скопировать файлы docker-compose.yml и nginx.conf на удаленный сервер:
+
+```bash
+scp docker-compose.yml <username>@<host>:/home/<username>/
+scp nginx.conf <username>@<host>:/home/<username>/
+```
+Либо создать docker-compose.yml и nginx.conf ручками(в корне)
+```bash
+touch docker-compose.yml
+touch nginx.conf
+```
+- Далее Выполните команду:
+```bash
+sudo docker-compose up -d(флаг -d нужен для запуска контейнеров в фоновом режиме)
+```
+
+- Примените миграции:
+
+```bash
+   sudo docker-compose exec backend python manage.py migrate
+```
+
+- Подгружаем статику:
+
+```bash
+   sudo docker-compose exec backend python manage.py collectstatic --no-input
+```
+
+- Заполните базу тестовыми данными об ингредиентах:
+
+```bash
+   sudo docker-compose exec backend python manage.py load_ingredients
+```
+
+- Создайте суперпользователя:
+
+```bash
+   sudo docker-compose exec backend python manage.py createsuperuser
+```
+
+#### Примеры некоторых запросов API
+
+Регистрация пользователя:
+
+```bash
+   POST /api/v1/users/
+```
+
+Получение данных своей учетной записи:
+
+```bash
+   GET /api/v1/users/me/ 
+```
+
+Добавление подписки:
+
+```bash
+   POST /api/v1/users/id/subscribe/
+```
+
+Обновление рецепта:
+  
+```bash
+   PATCH /api/v1/recipes/id/
+```
+
+Удаление рецепта из избранного:
+
+```bash
+   DELETE /api/v1/recipes/id/favorite/
+```
+
+
+Проект доступен по адресу: <https://foodgrams1632.ddns.net>
+
+Доступ в админ-панель:
+
+```bash
+   логин - hovard
+   пароль - qwerty123
+```
+
+#### Полный список запросов API находятся в документации
+
+#### Автор проекта
+
+Никита Бражников - (https://github.com/feniks1632)
