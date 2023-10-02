@@ -39,7 +39,7 @@ class AddIngredientInRecipeSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all()
     )
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(min_value=1)
 
     class Meta:
         model = IngredientAmount
@@ -70,6 +70,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     ingredients = AddIngredientInRecipeSerializer(many=True)
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
+    cooking_time = serializers.IntegerField(min_value=1)
 
     class Meta:
         model = Recipe
