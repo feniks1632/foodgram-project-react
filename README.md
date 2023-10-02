@@ -8,6 +8,7 @@
 [![gunicorn](https://img.shields.io/badge/-gunicorn-464646?style=flat-square&logo=gunicorn)](https://gunicorn.org/)
 [![docker](https://img.shields.io/badge/-Docker-464646?style=flat-square&logo=docker)](https://www.docker.com/)
 
+Проект доступен по адресу: https://foodgrams1632.ddns.net/recipes
 
 ## Описание
 Сайт на котором пользователи могут:
@@ -178,7 +179,6 @@ sudo docker-compose up -d(флаг -d нужен для запуска конт�
    логин - Hovard
    пароль - qwerty123
 ```
-Проект доступен по адресу: https://foodgrams1632.ddns.net/recipes
 
 #### Список запросов API находятся в документации(http://localhost/api/docs/)
 
